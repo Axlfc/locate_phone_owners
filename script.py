@@ -26,10 +26,19 @@ for n in index_list:
 for i in mobile_phone_list:
     if i[0] == "Telefon" or i[0] == "Telèfon" or i[0] == "Telefón" or i[0] == "Tèlf":
         tlf = str(i[1])
-        if tlf == "Mobil" or tlf == "Mòbil":
+        if tlf == "Mobil" or tlf == "Mòbil" or tlf == "mòbil":
+            i[2] = str(i[2]).replace("-", "")
             if len(str(i[2])) == 9 and int(str(i[2])[0]) != 9:
                 print(str(i[2]) + ":\t" + str(i[3:]))
                 print()
+            else:
+                if len(str(i[2])) > 8:
+                    if i[2][8].isdigit():
+                        print(str(i[2][0:9]) + ":\t" + str([i[2][9:]]))
+                        print()
+                    else:
+                        print(str(i[2][0:8]) + ":\t" + str([i[2][8:]]))
+                        print()
         else:
             if len(str(i[1])) == 9 and int(str(i[1])[0]) != 9:
                 print(str(i[1]) + ":\t" + str(i[2:]))
@@ -37,3 +46,5 @@ for i in mobile_phone_list:
     elif i[0] == "Telèf.Mòbil":
         print(str(i[1]) + ":\t" + str(i[2:]))
         print()
+    elif i[0].isdigit():
+        print(i[0] + ":\t" + str(i[1:]))
