@@ -3,6 +3,8 @@
 
 import pandas as pd
 import csv
+from datetime import datetime
+
 
 def read_excel():
     #df = pd.read_excel(r'Consum mobils del 2002 al 20073.xlsx')
@@ -26,30 +28,38 @@ def write_iterations_through_column(name_column):
                 list_index.append(str(index))
     return list_index
 
-def write_final_iterations_though_excel():
+
+def write_final_iterations_though_excel(mobile_phone_list):
     final_mobile_phone = []
     for i in mobile_phone_list:
+        time_value = ""
+        for j in range(len(index_list)):
+            time_value = "BEGIN=" + str(str(dates_start_mobile_phone_list[j]).split()[0]) + " END=" + str(
+                str(dates_end_mobile_phone_list[j]).split()[0])
         if i[0] == "Telefon" or i[0] == "Telèfon" or i[0] == "Telefón" or i[0] == "Tèlf":
             tlf = str(i[1])
             if tlf == "Mobil" or tlf == "Mòbil" or tlf == "mòbil":
                 i[2] = str(i[2]).replace("-", "")
                 if len(str(i[2])) == 9 and int(str(i[2])[0]) != 9:
-                    final_mobile_phone.append(str(i[2]) + ";\t" + str(i[3:]))
+                    if "-" in i:
+                        del i[3]
+                    final_mobile_phone.append(str(i[2]) + ";\t" + str(i[3:])+ " ;\t" + time_value)
                 else:
                     if len(str(i[2])) > 8:
                         if i[2][8].isdigit():
-                            final_mobile_phone.append(str(i[2][0:9]) + ";\t" + str([i[2][9:]]))
+                            final_mobile_phone.append(str(i[2][0:9]) + ";\t" + str([i[2][9:]])+ " ;\t" + time_value)
                         else:
-                            final_mobile_phone.append(str(i[2][0:8]) + ";\t" + str([i[2][8:]]))
+                            final_mobile_phone.append(str(i[2][0:8]) + ";\t" + str([i[2][8:]])+ " ;\t" + time_value)
             else:
                 if len(str(i[1])) == 9 and int(str(i[1])[0]) != 9:
-                    final_mobile_phone.append(str(i[1]) + " ;\t" + str(i[2:]))
+                    final_mobile_phone.append(str(i[1]) + " ;\t" + str(i[2:])+ " ;\t" + time_value)
         elif i[0] == "Telèf.Mòbil":
-            final_mobile_phone.append(str(i[1]) + ":\t" + str(i[2:]))
+            final_mobile_phone.append(str(i[1]) + ":\t" + str(i[2:])+ " ;\t" + time_value)
         elif i[0].isdigit():
-            final_mobile_phone.append(str(i[0]) + ":\t" + str(i[1:]))
-    return final_mobile_phone
+            final_mobile_phone.append(str(i[0]) + ":\t" + str(i[1:])+ " ;\t" + time_value)
 
+
+    return final_mobile_phone
 
 
 if __name__ == "__main__":
@@ -66,8 +76,19 @@ if __name__ == "__main__":
     for n in index_list:
         mobile_phone_list.append(c_column[int(n)].split())
 
-    phone_list = write_final_iterations_though_excel()
-    print(phone_list)
+    dates_start_mobile_phone_list = []
+    for n in index_list:
+        #n = int(n) + 2
+        dates_start_mobile_phone_list.append(b_column[int(n) + 2])
+
+    dates_end_mobile_phone_list = []
+    for n in index_list:
+        #n = int(n) + 2
+        dates_end_mobile_phone_list.append(b_column[int(n) - 4])
+    #print(dates_mobile_phone_list)
+
+    phone_list = write_final_iterations_though_excel(mobile_phone_list)
+    #print(phone_list)
 
     with open('employee_file.csv', mode='w') as employee_file:
         employee_writer = csv.writer(employee_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
